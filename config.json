@@ -1,0 +1,34 @@
+{
+  "duplicate_policy": "skip",
+  "clean": {
+    "min_text_length": 10,
+    "rating_range": [1, 5]
+  },
+  "ai": {
+    "model": "gpt-4o-mini",
+    "timeout": 60,
+    "languages": ["ko", "en"]
+  },
+  "alert": {
+    "window_days": 3,
+    "negative_ratio_threshold": 0.5,
+    "min_reviews": 5
+  },
+  "storage": {
+    "db_path": "data/reviews.db"
+  },
+  "visualization": {
+    "dpi": 150,
+    "colors": {
+      "긍정": "#4C956C",
+      "중립": "#8D99AE",
+      "부정": "#C1585A"
+    }
+  },
+  "output": {
+    "charts_dir": "output/charts",
+    "reports_dir": "output/reports",
+    "exports_dir": "output/exports",
+    "dashboard_dir": "output/dashboard"
+  }
+}
