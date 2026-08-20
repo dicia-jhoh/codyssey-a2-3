@@ -165,6 +165,7 @@ codyssey-a2-3/
 │   └── export.py      CSV · JSONL
 ├── config.json        임계값 · 색 · 중복 정책 · 경로
 ├── data/sample_reviews.csv   샘플 리뷰 35건
+├── docs/dashboard-sample.html  대시보드 결과물 샘플
 └── images/            문서용 차트 샘플
 ```
 
@@ -778,6 +779,27 @@ python -m reviewlens dashboard
 # → output/dashboard/dashboard.html (약 214KB, 차트 3장 포함)
 ```
 
+`output/` 은 `.gitignore` 에 있어 저장소에 올라가지 않습니다 — 생성물이라 코드에서 언제든
+다시 만들 수 있기 때문입니다. 대신 **결과가 어떻게 생겼는지 보라고 샘플 한 장**을
+[`docs/dashboard-sample.html`](docs/dashboard-sample.html) 에 넣어 두었습니다.
+
+GitHub 은 HTML 을 렌더하지 않고 소스로 보여 줍니다. 실제 화면으로 보려면 둘 중 하나입니다.
+
+| 방법 | 어떻게 |
+|---|---|
+| 샘플을 본다 | 파일을 내려받아(Raw → 저장) 브라우저로 엽니다 |
+| 직접 만든다 | 아래 3줄을 돌리면 같은 것이 `output/` 에 생깁니다 |
+
+```bash
+python -m reviewlens analyze     # 감정 분석 (GEMINI_API_KEY 필요)
+python -m reviewlens extract     # 인사이트 추출
+python -m reviewlens dashboard   # → output/dashboard/dashboard.html
+```
+
+샘플은 `data/sample_reviews.csv` 35건을 기준으로 만든 것이라, 위 3줄을 따라 하면 같은 형태의
+화면이 나옵니다. 다만 **숫자까지 같지는 않습니다** — 감정 판정은 모델의 답이라 칭찬과 불만이
+비슷하게 섞인 리뷰는 실행마다, 모델마다 긍정·중립·부정 사이에서 갈립니다.
+
 **파일 하나로 완결**시킵니다. 대시보드는 남에게 보내는 물건인데, HTML·이미지가 따로 있으면
 폴더째 보내야 하고 한 파일만 열면 이미지가 깨집니다.
 
@@ -951,6 +973,13 @@ def get_key(name: str = LLM_KEY_NAME) -> str | None:
 
 `analyze` 는 기본이 `unanalyzed` 대상이라, 한도가 풀린 뒤 같은 명령을 다시 치면 **실패한 건만**
 이어서 처리합니다. 처음부터 다시 돌 필요가 없습니다.
+
+한도는 **분당** 기준이라, 리뷰가 많으면 `--limit` 으로 끊어 도는 편이 빠릅니다. 한 번에 다
+쏘면 한도를 넘긴 나머지가 전부 429 로 떨어집니다.
+
+```bash
+python -m reviewlens analyze --limit 15   # 1분 기다렸다 다시
+```
 
 모델은 `config.json` 의 `ai.model` 에서 고릅니다.
 
