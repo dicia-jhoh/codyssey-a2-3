@@ -5,7 +5,7 @@
     "rating_range": [1, 5]
   },
   "ai": {
-    "model": "gpt-4o-mini",
+    "model": "gemini-flash-latest",
     "timeout": 60,
     "languages": ["ko", "en"]
   },

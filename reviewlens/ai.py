@@ -22,7 +22,10 @@ from .ingest import now_iso
 
 logger = logging.getLogger(__name__)
 
-OPENAI_URL = "https://api.openai.com/v1/chat/completions"
+# Gemini 의 OpenAI 호환 endpoint. 요청·응답 형태가 Chat Completions 와 같아서
+# 헤더(Bearer)·본문(messages/temperature)·응답 경로(choices[0].message.content)를
+# 그대로 두고 URL 과 모델 이름만 바꿔 붙일 수 있다.
+LLM_URL = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
 FENCE = re.compile(r"^\s*```(?:json)?\s*|\s*```\s*$")
 SENTIMENTS = {"긍정", "중립", "부정"}
 
@@ -35,7 +38,7 @@ TEXT_CAP = 1000
 def call_llm(api_key: str, prompt: str, config: dict) -> str:
     """Chat Completions 호출 → 응답 텍스트. 실패는 예외로 올린다."""
     response = requests.post(
-        OPENAI_URL,
+        LLM_URL,
         headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
         json={
             "model": config["ai"]["model"],

@@ -12,7 +12,7 @@ import os
 from pathlib import Path
 
 CONFIG_FILE = "config.json"
-LLM_KEY_NAME = "OPENAI_API_KEY"  # 값이 아니라 **이름만** 코드에 둔다
+LLM_KEY_NAME = "GEMINI_API_KEY"  # 값이 아니라 **이름만** 코드에 둔다
 
 
 def load_dotenv(path: str = ".env") -> None:

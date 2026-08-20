@@ -1,6 +1,6 @@
 .env
 .env.local
-data/*.db
+data/*.db*
 output/
 __pycache__/
 *.pyc

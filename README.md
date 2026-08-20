@@ -10,7 +10,7 @@
 | 저장소 | SQLite — `raw_reviews` · `clean_reviews` · `extractions` |
 | 차트 | 감정 분포 · 시간별 추이 · 별점별 감정 분포 (matplotlib) |
 | 외부 의존 | `requests` · `matplotlib` |
-| 환경 변수 | `OPENAI_API_KEY` |
+| 환경 변수 | `GEMINI_API_KEY` — [AI Studio](https://aistudio.google.com/apikey) 무료 등급으로 발급 |
 | 샘플 데이터 | `data/sample_reviews.csv` — 35건 · 제품 3종 · 한/영 혼합 |
 
 ---
@@ -421,7 +421,7 @@ def build_sentiment_prompt(text: str, language: str) -> str:
 def call_llm(api_key: str, prompt: str, config: dict) -> str:
     """Chat Completions 호출 → 응답 텍스트. 실패는 예외로 올린다."""
     response = requests.post(
-        OPENAI_URL,
+        LLM_URL,
         headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
         json={
             "model": config["ai"]["model"],
@@ -904,10 +904,10 @@ $ python -m reviewlens export --format both
 
 ```text
 $ python -m reviewlens analyze
-[안내] 환경변수 OPENAI_API_KEY 가 설정되어 있지 않습니다 — AI 단계를 실행할 수 없습니다.
-  macOS/Linux : export OPENAI_API_KEY="YOUR_KEY"
-  PowerShell  : $env:OPENAI_API_KEY="YOUR_KEY"
-  또는 .env 파일에 OPENAI_API_KEY=YOUR_KEY (.gitignore 에 있어 커밋되지 않습니다)
+[안내] 환경변수 GEMINI_API_KEY 가 설정되어 있지 않습니다 — AI 단계를 실행할 수 없습니다.
+  macOS/Linux : export GEMINI_API_KEY="YOUR_KEY"
+  PowerShell  : $env:GEMINI_API_KEY="YOUR_KEY"
+  또는 .env 파일에 GEMINI_API_KEY=YOUR_KEY (.gitignore 에 있어 커밋되지 않습니다)
 ```
 
 ---
@@ -916,7 +916,7 @@ $ python -m reviewlens analyze
 
 | 층 | 무엇을 | 어디에 |
 |---|---|---|
-| 1 | 코드는 **이름만** 안다 | `LLM_KEY_NAME = "OPENAI_API_KEY"` |
+| 1 | 코드는 **이름만** 안다 | `LLM_KEY_NAME = "GEMINI_API_KEY"` |
 | 2 | `.env` 를 커밋에서 제외 | `.gitignore` |
 | 3 | 형식만 공유 | `.env.example` 의 값은 `YOUR_KEY` |
 
@@ -935,6 +935,66 @@ def get_key(name: str = LLM_KEY_NAME) -> str | None:
 ```
 
 `if key not in os.environ` 이 **터미널에서 준 값이 `.env` 를 이기게** 합니다.
+
+### 어떤 키를 넣나 — Gemini 무료 티어
+
+기본 제공자는 **Google Gemini** 입니다. [Google AI Studio](https://aistudio.google.com/apikey)
+에서 구글 계정으로 로그인하면 키가 바로 나오고, **결제 수단 등록 없이 무료 등급으로 시작**할
+수 있습니다. 무료 등급에는 분당·하루 요청 수 한도가 있습니다(모델마다 다르고 정책이 바뀌므로
+정확한 수치는 [공식 요금 문서](https://ai.google.dev/gemini-api/docs/pricing)를 보세요).
+
+한도에 걸리면 HTTP 429 가 오고, 이 도구는 그 건만 건너뛰고 계속 돕니다.
+
+```text
+[분석 R014] HTTP 429 — 요청 한도 초과 — 잠시 후 재시도하세요
+```
+
+`analyze` 는 기본이 `unanalyzed` 대상이라, 한도가 풀린 뒤 같은 명령을 다시 치면 **실패한 건만**
+이어서 처리합니다. 처음부터 다시 돌 필요가 없습니다.
+
+모델은 `config.json` 의 `ai.model` 에서 고릅니다.
+
+| 값 | 성격 |
+|---|---|
+| `gemini-flash-latest` (기본) | 최신 flash 로 자동 이동하는 별칭. 모델 ID 가 낡아 죽지 않습니다 |
+| `gemini-3.7-flash` 등 고정 ID | 결과 재현이 필요할 때. 같은 코드가 언제 돌아도 같은 모델을 씁니다 |
+
+### 다른 제공자로 바꾸기 — OpenAI 호환 endpoint
+
+Gemini 는 **OpenAI 호환 endpoint** 를 제공합니다. 요청과 응답의 생김새가 OpenAI Chat
+Completions 와 같다는 뜻이라, 호출 코드는 한 벌이면 됩니다.
+
+| | 값 |
+|---|---|
+| 인증 헤더 | `Authorization: Bearer <키>` |
+| 요청 본문 | `{"model": ..., "messages": [...], "temperature": ...}` |
+| 응답 경로 | `choices[0].message.content` |
+
+세 가지가 같으므로 `call_llm` 은 **URL 상수 하나**만 알면 됩니다.
+
+```python
+LLM_URL = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+```
+
+OpenAI 로 되돌리려면 세 곳만 바꿉니다.
+
+| 무엇을 | 어디 | 값 |
+|---|---|---|
+| URL | `reviewlens/ai.py` 의 `LLM_URL` | `https://api.openai.com/v1/chat/completions` |
+| 모델 | `config.json` 의 `ai.model` | `gpt-4o-mini` 등 |
+| 키 이름 | `reviewlens/config.py` 의 `LLM_KEY_NAME` | `OPENAI_API_KEY` |
+
+같은 방식으로 OpenAI 호환 endpoint 를 내놓는 다른 서비스(로컬 모델 서버 포함)에도 붙습니다.
+
+**주의**: 호환 레이어라 OpenAI 전용 옵션(`response_format`·`logprobs` 등)은 무시되거나 오류가
+납니다. 이 도구는 `model`·`messages`·`temperature` 만 쓰므로 해당되지 않습니다.
+
+한 가지 실제 차이는 있습니다 — 모델에 따라 JSON 응답에 ```` ```json ```` 코드펜스를 붙여 오는
+경우가 있습니다. `parse_json` 이 펜스를 먼저 벗기므로 어느 쪽이든 똑같이 읽힙니다.
+
+```python
+FENCE = re.compile(r"^\s*```(?:json)?\s*|\s*```\s*$")
+```
 
 ---
 
@@ -1017,7 +1077,7 @@ def get_key(name: str = LLM_KEY_NAME) -> str | None:
 | Git | [git-scm.com](https://git-scm.com/) |
 | 패키지 2개 | `pip install -r requirements.txt` |
 | 한글 폰트 | Windows·macOS 기본 제공. Linux 는 `sudo apt install fonts-nanum` |
-| OpenAI API 키 | 없어도 적재·정제·조회·내보내기는 동작합니다 |
+| Gemini API 키 | 없어도 적재·정제·조회·내보내기는 동작합니다. 발급 = [Google AI Studio](https://aistudio.google.com/apikey) |
 
 ---
 
