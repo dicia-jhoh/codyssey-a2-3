@@ -777,7 +777,7 @@ $ python -m reviewlens stats --as-of 2026-07-14
 
 ```bash
 python -m reviewlens dashboard
-# → output/dashboard/dashboard.html (약 214KB, 차트 3장 포함)
+# → output/dashboard/dashboard.html (약 207KB, 차트 3장 포함)
 ```
 
 `output/` 은 `.gitignore` 에 있어 저장소에 올라가지 않습니다 — 생성물이라 코드에서 언제든

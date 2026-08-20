@@ -83,7 +83,9 @@ def chart_sentiment_share(data: list[tuple[str, int]], out_dir: str, cfg: dict) 
     values = [n for _, n in ordered]
     total = sum(values)
 
-    fig, ax = plt.subplots(figsize=(6, 6))
+    # 대시보드가 차트 3장을 한 줄에 놓는다. 정사각형 하나만 섞이면 그 칸만 높이가
+    # 두 배가 되어 줄이 어긋난다 — 세 장의 가로세로비를 비슷하게 맞춘다.
+    fig, ax = plt.subplots(figsize=(8, 4.5))
     _, _, autotexts = ax.pie(
         values,
         labels=[f"{s} ({n}건)" for s, n in ordered],
