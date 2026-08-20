@@ -12,6 +12,7 @@
 | 외부 의존 | `requests` · `matplotlib` |
 | 환경 변수 | `GEMINI_API_KEY` — [AI Studio](https://aistudio.google.com/apikey) 무료 등급으로 발급 |
 | 샘플 데이터 | `data/sample_reviews.csv` — 35건 · 제품 3종 · 한/영 혼합 |
+| 결과물 미리보기 | **[대시보드 샘플](https://dicia-jhoh.github.io/codyssey-a2-3/)** (GitHub Pages) |
 
 ---
 
@@ -165,7 +166,7 @@ codyssey-a2-3/
 │   └── export.py      CSV · JSONL
 ├── config.json        임계값 · 색 · 중복 정책 · 경로
 ├── data/sample_reviews.csv   샘플 리뷰 35건
-├── docs/dashboard-sample.html  대시보드 결과물 샘플
+├── docs/index.html    대시보드 결과물 샘플(GitHub Pages 로 공개)
 └── images/            문서용 차트 샘플
 ```
 
@@ -781,13 +782,16 @@ python -m reviewlens dashboard
 
 `output/` 은 `.gitignore` 에 있어 저장소에 올라가지 않습니다 — 생성물이라 코드에서 언제든
 다시 만들 수 있기 때문입니다. 대신 **결과가 어떻게 생겼는지 보라고 샘플 한 장**을
-[`docs/dashboard-sample.html`](docs/dashboard-sample.html) 에 넣어 두었습니다.
+`docs/index.html` 에 넣고 GitHub Pages 로 띄워 두었습니다.
 
-GitHub 은 HTML 을 렌더하지 않고 소스로 보여 줍니다. 실제 화면으로 보려면 둘 중 하나입니다.
+### 👉 [바로 보기 — dicia-jhoh.github.io/codyssey-a2-3](https://dicia-jhoh.github.io/codyssey-a2-3/)
+
+저장소에서 HTML 파일을 그냥 열면 GitHub 이 렌더하지 않고 소스를 보여 줍니다. Pages 로 띄운
+이유가 그것입니다 — 클릭 한 번으로 실제 화면이 뜹니다.
 
 | 방법 | 어떻게 |
 |---|---|
-| 샘플을 본다 | 파일을 내려받아(Raw → 저장) 브라우저로 엽니다 |
+| 샘플을 본다 | 위 링크를 엽니다 |
 | 직접 만든다 | 아래 3줄을 돌리면 같은 것이 `output/` 에 생깁니다 |
 
 ```bash
