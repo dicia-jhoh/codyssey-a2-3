@@ -12,7 +12,7 @@
 | 외부 의존 | `requests` · `matplotlib` |
 | 환경 변수 | `GEMINI_API_KEY` — [AI Studio](https://aistudio.google.com/apikey) 무료 등급으로 발급 |
 | 샘플 데이터 | `data/sample_reviews.csv` — 35건 · 제품 3종 · 한/영 혼합 |
-| 결과물 미리보기 | **[대시보드 샘플](https://dicia-jhoh.github.io/codyssey-a2-3/)** (GitHub Pages) |
+| 결과물 미리보기 | **[대시보드 샘플](https://dicia-jhoh.github.io/codyssey-a2-3/)** (GitHub Pages) · [스크린샷](images/dashboard-preview.png) |
 
 ---
 
@@ -784,6 +784,8 @@ python -m reviewlens dashboard
 `docs/index.html` 에 넣고 GitHub Pages 로 띄워 두었습니다.
 
 ### 👉 [바로 보기 — dicia-jhoh.github.io/codyssey-a2-3](https://dicia-jhoh.github.io/codyssey-a2-3/)
+
+[![대시보드 미리보기](images/dashboard-preview.png)](https://dicia-jhoh.github.io/codyssey-a2-3/)
 
 저장소에서 HTML 파일을 그냥 열면 GitHub 이 렌더하지 않고 소스를 보여 줍니다. Pages 로 띄운
 이유가 그것입니다 — 클릭 한 번으로 실제 화면이 뜹니다.
