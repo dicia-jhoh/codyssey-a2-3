@@ -11,7 +11,7 @@
 | 차트 | 감정 분포 · 시간별 추이 · 별점별 감정 분포 (matplotlib) |
 | 외부 의존 | `requests` · `matplotlib` |
 | 환경 변수 | `GEMINI_API_KEY` — [AI Studio](https://aistudio.google.com/apikey) 무료 등급으로 발급 |
-| 샘플 데이터 | `data/sample_reviews.csv` — 35건 · 제품 3종 · 한/영 혼합 |
+| 샘플 데이터 | `data/sample_reviews.csv` — 70건 · 제품 3종 · 한/영 혼합 |
 | 결과물 미리보기 | **[대시보드 샘플](https://dicia-jhoh.github.io/codyssey-a2-3/)** (GitHub Pages) · [스크린샷](images/dashboard-preview.png) |
 
 ---
@@ -164,7 +164,7 @@ codyssey-a2-3/
 │   ├── dashboard.py   단일 HTML 대시보드(보너스)
 │   └── export.py      CSV · JSONL
 ├── config.json        임계값 · 색 · 중복 정책 · 경로
-├── data/sample_reviews.csv   샘플 리뷰 35건
+├── data/sample_reviews.csv   샘플 리뷰 70건
 ├── docs/index.html    대시보드 결과물 샘플(GitHub Pages 로 공개)
 └── images/            문서용 차트 샘플
 ```
@@ -209,17 +209,17 @@ def _pick(row: dict, candidates: tuple[str, ...]) -> str | None:
 읽으면 **첫 열 이름이 `﻿review_id`** 가 되어 헤더 매칭이 **조용히** 실패합니다.
 오류도 안 나고 그 열만 비어 나오기 때문에 원인을 찾기 어렵습니다.
 
-### 샘플 데이터 (35건)
+### 샘플 데이터 (70건)
 
 `data/sample_reviews.csv` 는 검증 목적을 담아 구성했습니다.
 
 | 축 | 구성 | 무엇을 확인하나 |
 |---|---|---|
 | 제품 | 3종(이어폰·스피커·워치) | 제품별 비교 분석(보너스) |
-| 언어 | 한국어 31 · 영어 4 | 다국어 감정 분석(보너스) |
-| 별점 | 1~5 고르게(6/6/4/9/10) | 별점별 감정 분포 차트 |
-| 날짜 | 2026-07-01 ~ 07-16 | 시간별 추이 차트 |
-| **부정 집중** | 7/12~14 에 몰아 둠 | **감정 급증 알림**(보너스) |
+| 언어 | 한국어 62 · 영어 8 | 다국어 감정 분석(보너스) |
+| 별점 | 1~5 고르게(10/11/11/18/20) | 별점별 감정 분포 차트 |
+| 날짜 | 2026-07-01 ~ 08-20 (약 7주) | 시간별 추이 차트 |
+| **부정 집중** | 8/18~20 에 몰아 둠 | **감정 급증 알림**(보너스) |
 
 ---
 
@@ -581,13 +581,13 @@ SENTIMENT_ORDER = ["긍정", "중립", "부정"]
 
 ```text
 $ python -m reviewlens list --sentiment 부정 --sort rating --asc --size 4
-총 12건 · 1/3 페이지 · 정렬 rating 오름차순
+총 24건 · 1/6 페이지 · 정렬 rating 오름차순
 리뷰ID    작성일         별점   감정   신뢰    본문
 ------------------------------------------------------------------------------------
-R008    2026-07-04  ★1   부정   0.65  이틀 만에 전원이 안 켜집니다. 교환 요청했어요.
-R023    2026-07-12  ★1   부정   0.74  한 달도 안 돼서 오른쪽 소리가 안 납니다. 실망입니다.
-R024    2026-07-12  ★1   부정   0.67  배송 상자가 찌그러져 왔고 제품에도 흠집이 있었습니다.
-R026    2026-07-13  ★1   부정   0.74  고객센터 연결이 안 됩니다. 환불 절차도 복잡해요.
+R008    2026-07-04  ★1   부정   0.97  이틀 만에 전원이 안 켜집니다. 교환 요청했어요.
+R023    2026-07-12  ★1   부정   0.98  한 달도 안 돼서 오른쪽 소리가 안 납니다. 실망입니다.
+R024    2026-07-12  ★1   부정   0.95  배송 상자가 찌그러져 왔고 제품에도 흠집이 있었습니다.
+R026    2026-07-13  ★1   부정   0.98  고객센터 연결이 안 됩니다. 환불 절차도 복잡해요.
 
 다음 페이지: --page 2
 ```
@@ -631,7 +631,7 @@ $ python -m reviewlens show R023
 
 [감정 분석]
   판정   : 부정
-  신뢰도 : 0.74
+  신뢰도 : 0.98
 ```
 
 신뢰도가 0.7 미만이면 확인하라는 문구가 함께 나옵니다.
@@ -649,15 +649,15 @@ $ python -m reviewlens show R023
 ==============================================================
  리뷰 통계 요약
 ==============================================================
-  총 리뷰(정제 후) : 35건 (원본 35건)
-  감정 분석 완료   : 35건
-  평균 별점        : 3.31
-  평균 신뢰도      : 0.782
+  총 리뷰(정제 후) : 70건 (원본 70건)
+  감정 분석 완료   : 70건
+  평균 별점        : 3.39
+  평균 신뢰도      : 0.87
 
   [감정별 분포]
-    긍정    19건  54.3%  ███████████
-    부정    12건  34.3%  ███████
-    중립     4건  11.4%  ██
+    긍정    38건  54.3%  ███████████
+    부정    24건  34.3%  ███████
+    중립     8건  11.4%  ██
 
   [언어별]
     ko   31건
@@ -724,14 +724,14 @@ def detect_language(text: str) -> str:
 최근 N일 부정 비율이 급증하면 경고합니다.
 
 ```text
-$ python -m reviewlens stats --as-of 2026-07-14
+$ python -m reviewlens stats
   [감정 변화 알림]
   창 크기: 3일 · 기준선 50% · 최소 표본 5건
-  최근 2026-07-12~2026-07-14  리뷰   8건 · 부정   8건 · 100.0%
-  직전 2026-07-09~2026-07-11  리뷰   6건 · 부정   1건 · 16.7%
-  ⚠ 최근 3일(2026-07-12~2026-07-14) 부정 비율이 100.0% (8/8건)로 기준선 50% 를
-    넘었습니다. 직전 같은 기간(2026-07-09~2026-07-11) 대비 부정 비율이
-    16.7% → 100.0% (+83.3%p) 로 급증했습니다.
+  최근 2026-08-18~2026-08-20  리뷰   9건 · 부정   6건 · 66.7%
+  직전 2026-08-15~2026-08-17  리뷰   5건 · 부정   0건 · 0.0%
+  ⚠ 최근 3일(2026-08-18~2026-08-20) 부정 비율이 66.7% (6/9건)로 기준선 50% 를
+    넘었습니다. 직전 같은 기간(2026-08-15~2026-08-17) 대비 부정 비율이
+    0.0% → 66.7% (+66.7%p) 로 급증했습니다.
 ```
 
 판정 축이 **두 개**입니다.
@@ -776,7 +776,7 @@ $ python -m reviewlens stats --as-of 2026-07-14
 
 ```bash
 python -m reviewlens dashboard
-# → output/dashboard/dashboard.html (약 207KB, 차트 3장 포함)
+# → output/dashboard/dashboard.html (약 229KB, 차트 3장 포함)
 ```
 
 `output/` 은 `.gitignore` 에 있어 저장소에 올라가지 않습니다 — 생성물이라 코드에서 언제든
@@ -801,7 +801,7 @@ python -m reviewlens extract     # 인사이트 추출
 python -m reviewlens dashboard   # → output/dashboard/dashboard.html
 ```
 
-샘플은 `data/sample_reviews.csv` 35건을 기준으로 만든 것이라, 위 3줄을 따라 하면 같은 형태의
+샘플은 `data/sample_reviews.csv` 70건을 기준으로 만든 것이라, 위 3줄을 따라 하면 같은 형태의
 화면이 나옵니다. 다만 **숫자까지 같지는 않습니다** — 감정 판정은 모델의 답이라 칭찬과 불만이
 비슷하게 섞인 리뷰는 실행마다, 모델마다 긍정·중립·부정 사이에서 갈립니다.
 
@@ -893,7 +893,7 @@ GROUP BY product ORDER BY total DESC
 
 | 레벨 | 무엇에 | 예 |
 |---|---|---|
-| INFO | 정상 진행 | `CSV 읽기: data/sample_reviews.csv 35행` |
+| INFO | 정상 진행 | `CSV 읽기: data/sample_reviews.csv 70행` |
 | WARNING | 계속 돌지만 확인 필요 | `별점이 범위(1~5) 밖입니다: 7` |
 | ERROR | 그 단위는 실패 | `[분석 R023] HTTP 429 — 요청 한도 초과` |
 
@@ -906,25 +906,26 @@ GROUP BY product ORDER BY total DESC
 
 ```text
 $ python -m reviewlens import --file data/sample_reviews.csv
-19:32:54 [INFO] reviewlens.ingest: CSV 읽기: data/sample_reviews.csv 35행
-적재 35건 (원본 저장소)
+10:24:58 [INFO] reviewlens.ingest: CSV 읽기: data/sample_reviews.csv 70행
+적재 70건 (원본 저장소)
 
 $ python -m reviewlens clean
-19:32:55 [INFO] reviewlens.clean: 정제 완료: 대상 35 · 신규 35 · 중복 0 · 갱신 0 · 제외 0
-정제 대상 35 · 신규 35 · 중복 0 · 갱신 0 · 제외 0
+10:24:59 [INFO] reviewlens.clean: 정제 완료: 대상 70 · 신규 70 · 중복 0 · 갱신 0 · 제외 0
+정제 대상 70 · 신규 70 · 중복 0 · 갱신 0 · 제외 0
 
-$ python -m reviewlens dashboard --as-of 2026-07-14
-19:33:28 [INFO] reviewlens.charts: 차트 저장: output/charts/sentiment_share.png
-19:33:28 [INFO] reviewlens.charts: 차트 저장: output/charts/sentiment_trend.png
-19:33:28 [INFO] reviewlens.charts: 차트 저장: output/charts/rating_sentiment.png
-19:33:28 [WARNING] reviewlens.alert: 감정 변화 경고 — 최근 3일(2026-07-12~2026-07-14)
-  부정 비율이 100.0% (8/8건)로 기준선 50% 를 넘었습니다. …
-19:33:28 [INFO] reviewlens.stats: 리포트 저장: output/reports/report_2026-07-28.md
-19:33:28 [INFO] reviewlens.dashboard: 대시보드 저장: output/dashboard/dashboard.html
+$ python -m reviewlens dashboard
+10:27:38 [INFO] reviewlens.charts: 차트 저장: output/charts/sentiment_share.png
+10:27:39 [INFO] reviewlens.charts: 차트 저장: output/charts/sentiment_trend.png
+10:27:39 [INFO] reviewlens.charts: 차트 저장: output/charts/rating_sentiment.png
+10:27:39 [WARNING] reviewlens.alert: 감정 변화 경고 — 최근 3일(2026-08-18~2026-08-20)
+  부정 비율이 66.7% (6/9건)로 기준선 50% 를 넘었습니다. 직전 같은 기간
+  (2026-08-15~2026-08-17) 대비 부정 비율이 0.0% → 66.7% (+66.7%p) 로 급증했습니다.
+10:27:39 [INFO] reviewlens.stats: 리포트 저장: output/reports/report_2026-08-20.md
+10:27:39 [INFO] reviewlens.dashboard: 대시보드 저장: output/dashboard/dashboard.html
 
 $ python -m reviewlens export --format both
-19:33:40 [INFO] reviewlens.export: CSV 저장: output/exports/reviews_2026-07-28.csv (35건)
-19:33:40 [INFO] reviewlens.export: JSONL 저장: output/exports/reviews_2026-07-28.jsonl (35건)
+10:29:02 [INFO] reviewlens.export: CSV 저장: output/exports/reviews_2026-08-20.csv (70건)
+10:29:02 [INFO] reviewlens.export: JSONL 저장: output/exports/reviews_2026-08-20.jsonl (70건)
 ```
 
 키가 없을 때:
@@ -1050,7 +1051,7 @@ FENCE = re.compile(r"^\s*```(?:json)?\s*|\s*```\s*$")
 | logging | INFO/WARNING/ERROR |
 | 영구 저장소 필수 | SQLite (메모리 사용 안 함) |
 | 4모듈 이상 | `reviewlens/` 아래 **12개** |
-| 샘플 데이터 30건 이상 | `data/sample_reviews.csv` **35건** |
+| 샘플 데이터 30건 이상 | `data/sample_reviews.csv` **70건** |
 | 웹 대시보드 없음 | 정적 HTML 파일 하나 |
 | 크롤링 없음 | 파일 입력만 |
 | 키를 코드에 쓰지 않음 | 환경변수 이름만 |
@@ -1160,19 +1161,19 @@ FENCE = re.compile(r"^\s*```(?:json)?\s*|\s*```\s*$")
    python -m reviewlens analyze --unanalyzed --limit 10
    python -m reviewlens stats
    ```
-6. **알림을 발동시켜 봅니다.** 샘플은 7/12~14 에 부정이 몰려 있습니다.
+6. **알림을 발동시켜 봅니다.** 샘플은 8/18~20 에 부정이 몰려 있어 그냥 돌려도 발동합니다.
    ```bash
-   python -m reviewlens stats --as-of 2026-07-14
+   python -m reviewlens stats
    ```
 7. **대시보드를 만듭니다.** `output/dashboard/dashboard.html` 을 브라우저로 엽니다.
    ```bash
    python -m reviewlens extract --sentiment 부정
-   python -m reviewlens dashboard --as-of 2026-07-14
+   python -m reviewlens dashboard
    ```
 8. **직접 리뷰를 넣어 봅니다.**
    ```bash
    python -m reviewlens add --text "배터리가 하루를 못 갑니다. 교환하고 싶어요." \
-     --product "스마트 워치 C" --rating 2 --date 2026-07-17
+     --product "스마트 워치 C" --rating 2 --date 2026-08-21
    python -m reviewlens clean
    python -m reviewlens analyze --unanalyzed
    ```
